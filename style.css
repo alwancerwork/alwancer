@@ -1,0 +1,64 @@
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+:root { --neon: #19c6ff; --neon2: #0a8fd1; }
+
+body {
+  margin: 0;
+  font-family: 'Rubik', Arial, sans-serif;
+  color: #d7e9f5;
+  background: #0b0b0f;
+}
+
+/* ---------- FUNDO ---------- */
+.fundo {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+.linha {
+  filter: drop-shadow(0 0 5px #19c6ff) drop-shadow(0 0 12px #0a8fd1);
+}
+
+/* ---------- MENU ---------- */
+.menu {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 6vw;
+  background: rgba(20, 21, 26, 0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(25, 198, 255, 0.25);
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--neon);
+  text-decoration: none;
+  letter-spacing: 1px;
+  font-weight: 300;
+}
+.logo b { font-weight: 500; }
+.links a {
+  color: #cfe8f5;
+  text-decoration: none;
+  margin-left: 26px;
+  font-size: 14px;
+  letter-spacing: 2px;
+  transition: color 0.3s, text-shadow 0.3s;
+}
+.links a:hover {
+  color: var(--neon);
+  text-shadow: 0 0 10px var(--neon);
+}
+
+/* ---------- TOPO (HERO) ---------- */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;

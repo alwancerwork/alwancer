@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alwancer H.S. | Projeto de Automação</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Rubik:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    :root { --neon: #19c6ff; --neon2: #0a8fd1; }
+
+    body {
+      margin: 0;
+      font-family: 'Rubik', Arial, sans-serif;
+      color: #d7e9f5;
+      background: #0b0b0f;
+    }
+
+    .fundo {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    .linha {
+      filter: drop-shadow(0 0 5px #19c6ff) drop-shadow(0 0 12px #0a8fd1);
+    }
+
+    .menu {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 6vw;
+      background: rgba(20, 21, 26, 0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(25, 198, 255, 0.25);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--neon);
+      text-decoration: none;
+      letter-spacing: 1px;
+      font-weight: 300;
+    }
+    .logo b { font-weight: 500; }
+    .links a {
+      color: #cfe8f5;
+      text-decoration: none;
+      margin-left: 26px;
+      font-size: 14px;
+      letter-spacing: 2px;
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+    .links a:hover {
+      color: var(--neon);
+      text-shadow: 0 0 10px var(--neon);
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 110px 6vw 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .hero small {
+      letter-spacing: 3px;
+      font-size: clamp(14px, 2vw, 20px);
+      font-weight: 300;
+      text-transform: uppercase;
+      animation: subir 0.8s ease backwards;
+    }
+    .hero h1 {
+      font-family: 'Anton', Impact, sans-serif;
+      font-weight: 400;
+      font-size: clamp(3rem, 10vw, 7.5rem);
+      line-height: 1;
+      margin: 14px 0 24px;
+      text-transform: uppercase;
+      color: rgba(25, 198, 255, 0.06);
+      -webkit-text-stroke: 2px var(--neon);
+      text-shadow: 0 0 14px var(--neon), 0 0 36px var(--neon2);
+      animation: subir 1s ease 0.15s backwards;
+    }
+    .hero p {
+      max-width: 560px;
+      color: var(--neon);
+      font-size: 15px;
+      line-height: 1.7;
+      animation: subir 1s ease 0.3s backwards;
+    }
+    .botoes {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+      animation: subir 1s ease 0.45s backwards;
+    }
+    .btn {
+      padding: 14px 34px;
+      font-family: 'Anton', Impact, sans-serif;
+      font-size: 18px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: #d9f4ff;
+      background: linear-gradient(135deg, #2a2c34, #16171c);
+      border: 1px solid #3a3d48;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+      transition: 0.3s;
+    }
+    .btn.borda {
+      outline: 2px solid var(--neon);
+      outline-offset: -6px;
+    }
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 18px var(--neon);
+      color: #fff;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 26px;
+      scroll-margin-top: 80px;
+    }
+
+    .card {
+      position: relative;
+      height: 340px;
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid rgba(25, 198, 255, 0.35);
+      background: #111;
+      cursor: pointer;
+      transition: box-shadow 0.4s, transform 0.4s, border-color 0.4s;
+      animation: subir 0.8s ease backwards;
+    }
+    .card:nth-child(2) { animation-delay: 0.15s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+    .card:hover, .card.aberto {
+      transform: translateY(-6px);
+      border-color: var(--neon);
+      box-shadow: 0 0 24px rgba(25, 198, 255, 0.45);
+    }
+    .card img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s, filter 0.6s;
+    }
+    .card:hover img, .card.aberto img {
+      transform: scale(1.1);
+      filter: brightness(0.4);
+    }
+    .info {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: 18px 22px 22px;
+      background: linear-gradient(to top, rgba(6, 9, 14, 0.96) 55%, rgba(6, 9, 14, 0));
+      transform: translateY(calc(100% - 70px));
+      transition: transform 0.5s ease;
+    }
+    .info h2 {
+      font-family: 'Anton', Impact, sans-serif;
+      font-weight: 400;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin: 0 0 10px;
+      color: var(--neon);
+      text-shadow: 0 0 10px rgba(25, 198, 255, 0.6);
+    }
+    .info p {
+      margin: 0;
+      font-size: 14.5px;
+      line-height: 1.7;
+      opacity: 0;
+      transition: opacity 0.5s 0.1s;
+    }
+    .card:hover .info, .card.aberto .info { transform: translateY(0); }
+    .card:hover .info p, .card.aberto .info p { opacity: 1; }
+
+    .vidro {
+      grid-column: 1 / -1;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(25, 198, 255, 0.25);
+      border-radius: 16px;
+      padding: 28px;
+      backdrop-filter: blur(6px);
+      scroll-margin-top: 80px;
+      animation: subir 0.8s ease backwards;
+    }
+    .vidro h2 {
+      font-family: 'Anton', Impact, sans-serif;
+      font-weight: 400;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin: 0 0 12px;
+      color: var(--neon);
+      text-shadow: 0 0 10px rgba(25, 198, 255, 0.6);
+    }
+    .vidro p { margin: 0; line-height: 1.8; }
+
+    .painel {
+      background: #16171b;
+      padding: 16px;
+      border-radius: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      max-width: 100%;
+      border: 1px solid #2c2c30;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+    }
+    .botao {
+      background: #2a2a2e;
+      color: #8a8a90;
+      border: 2px solid #0b0b0c;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .botao:hover { transform: translateY(-2px); }
+    .botao:active { transform: scale(0.94); }
+    .redondo {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      font-size: 18px;
+    }
+    .pilula {
+      height: 40px;
+      padding: 0 18px;
+      border-radius: 20px;
+    }
+    .ligado {
+      background: #2d8cff;
+      color: #fff;
+      box-shadow: 0 0 14px #2d8cff;
+    }
+    .alerta.ligado {
+      background: #e5392e;
+      box-shadow: 0 0 14px #e5392e;
+    }
+    .partida.ligado {
+      background: #2ecc71;
+      box-shadow: 0 0 14px #2ecc71;
+    }
+    .redondo.ligado, .alerta.ligado {
+      animation: piscar 0.8s infinite;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 20px 50px;
+      font-size: 13px;
+      letter-spacing: 2px;
+      color: #6f8794;
+    }
+
+    @keyframes subir {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes piscar {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(0.35); }
+    }
+  </style>
+</head>
+<body>
+
+  <svg class="fundo" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <radialGradient id="base" cx="50%" cy="40%" r="80%">
+        <stop offset="0" stop-color="#25272f"/>
+        <stop offset="1" stop-color="#0b0b0f"/>
+      </radialGradient>
+      <pattern id="hex" width="27.72" height="48" patternUnits="userSpaceOnUse">
+        <g fill="none" stroke="#2c2f3a" stroke-width="1.5">
+          <polygon points="13.86,0 27.72,8 27.72,24 13.86,32 0,24 0,8"/>
+          <polygon points="0,24 13.86,32 13.86,48 0,56 -13.86,48 -13.86,32"/>
+          <polygon points="27.72,24 41.58,32 41.58,48 27.72,56 13.86,48 13.86,32"/>
+          <polygon points="0,-24 13.86,-16 13.86,0 0,8 -13.86,0 -13.86,-16"/>
+          <polygon points="27.72,-24 41.58,-16 41.58,0 27.72,8 13.86,0 13.86,-16"/>
+        </g>
+      </pattern>
+    </defs>
+    <rect width="1440" height="900" fill="url(#base)"/>
+    <polygon points="1040,0 1440,0 1440,165 1310,90 1250,120" fill="#101116"/>
+    <polygon points="1040,0 1440,0 1440,165 1310,90 1250,120" fill="url(#hex)"/>
+    <polyline class="linha" points="1040,0 1250,120 1310,90 1440,165" fill="none" stroke="#19c6ff" stroke-width="3"/>
+    <polyline class="linha" points="1190,0 1440,142" fill="none" stroke="#19c6ff" stroke-width="2" opacity="0.6"/>
+    <polygon points="0,700 240,830 300,800 420,870 460,900 0,900" fill="#101116"/>
+    <polygon points="0,700 240,830 300,800 420,870 460,900 0,900" fill="url(#hex)"/>
+    <polyline class="linha" points="0,700 240,830 300,800 420,870 460,900" fill="none" stroke="#19c6ff" stroke-width="3"/>
+    <polyline class="linha" points="0,640 150,727" fill="none" stroke="#19c6ff" stroke-width="2" opacity="0.6"/>
+  </svg>
+
+  <nav class="menu">
+    <a class="logo" href="#inicio">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+        <polygon points="17,2 30,9.5 30,24.5 17,32 4,24.5 4,9.5" fill="none" stroke="#19c6ff" stroke-width="1.8"/>
+        <path d="M12.5 12.8 A6.5 6.5 0 1 0 21.5 12.8" fill="none" stroke="#19c6ff" stroke-width="2" stroke-linecap="round"/>
+        <path d="M17 9.5 V17" fill="none" stroke="#19c6ff" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span><b>ALWANCER</b> H.S.</span>
+    </a>
+    <div class="links">
+      <a href="#inicio">HOME</a>
+      <a href="#projeto">PROJETO</a>
+      <a href="#painel">PAINEL</a>
+    </div>
+  </nav>
+
+  <header class="hero" id="inicio">
+  <div class="hero-texto">
+    <small>A próxima fase da automação</small>
+    <h1>Projeto de automação</h1>
+    <p>Controle remoto das luzes, setas e pisca alerta de um LEGO Technic Dodge Charger usando uma ESP32 e um app no celular.</p>
+    <div class="botoes">
+      <a class="btn" href="#projeto">Ver projeto</a>
+      <a class="btn borda" href="#painel">Painel</a>
+    </div>
+  </div>
+
+  <div class="hero-arte">
+    <img src="carro-tech.jpg" alt="Carro com eletrônica e circuitos em neon">
+  </div>
+</header>
+
+  <main id="projeto">
+
+    <article class="card">
+      <img src="photo.jpg" alt="Placa ESP32">
+      <div class="info">
+        <h2>Sobre o projeto</h2>
+        <p>O cérebro do projeto será uma ESP32.</p>
+      </div>
+    </article>
+
+    <article class="card">
+      <img src="dodge.jpg" alt="LEGO Technic Dodge Charger">
+      <div class="info">
+        <h2>Para o projeto</h2>
+        <p>O corpo do projeto é um LEGO Technic Dodge Charger R/T 1970.</p>
+      </div>
+    </article>
+
+    <article class="card">
+      <img src="luzes.jpg" alt="Dodge Charger com as luzes acesas">
+      <div class="info">
+        <h2>Controle pelo celular</h2>
+        <p>Escreva aqui o texto desta seção.</p>
+      </div>
+    </article>
+
+    <section class="vidro">
+      <h2>Resultado</h2>
+      <p>O projeto não está finalizado, porém atingi a primeira meta, que foi desenvolver um app com botões funcionais para acionar as luzes do farol e as luzes de setas e piscas alertas remotamente no Dodge Charger. O projeto conta com um controlador pelo celular com botões funcionais e uma interface incrível. Em breve teremos mais atualizações.</p>
+    </section>
+
+    <section class="vidro" id="painel">
+      <h2>Painel de controle</h2>
+      <div class="painel">
+        <button class="botao redondo">◀</button>
+        <button class="botao redondo">▶</button>
+        <button class="botao pilula alerta">PISCA ALERTA</button>
+        <button class="botao pilula">LUZES</button>
+        <button class="botao pilula partida">PARTIDA DO MOTOR</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>ALWANCER H.S. · PROJETO DE AUTOMAÇÃO</footer>
+
+  <script>
+    document.querySelectorAll('.card').forEach(function (card) {
+      card.addEventListener('click', function () {
+        card.classList.toggle('aberto');
+      });
+    });
+
+    document.querySelectorAll('.botao').forEach(function (botao) {
+      botao.addEventListener('click', function () {
+        botao.classList.toggle('ligado');
+      });
+    });
+  </script>
+
+</body>
+</html>
